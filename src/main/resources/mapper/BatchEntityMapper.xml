@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yidiandian.dao.BatchEntityDao">
+
+    <insert id="batchInsert" parameterType="list">
+        insert into tb_batch_entity(label,content,state,create_time,update_time)values
+        <foreach item= "vo" collection= "batchEntities" index = "index" separator = "," >
+            (
+             #{vo.label},#{vo.content},#{vo.state},#{vo.createTime},#{vo.updateTime}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="batchDelete" parameterType="java.util.List">
+       delete from tb_batch_entity where id in
+        <foreach collection="ids" item="item" separator="," open="(" close=")">
+          #{item}
+        </foreach>
+    </delete>
+
+    <update id="batchUpdate" parameterType="java.util.List">
+
+        <foreach collection="batchEntities" item = "vo" index="index" open="" close="" separator=";">
+            UPDATE tb_batch_entity
+            <set>
+                <if test="vo.label != null and vo.label != ''">
+                    label = #{vo.label},
+                </if>
+                <if test="vo.content != null and vo.content != ''">
+                    content = #{vo.content},
+                </if>
+                <if test="vo.state != null and vo.state != ''">
+                    state = #{vo.state}
+                </if>
+            </set>
+            <where>
+                id = #{vo.id}
+            </where>
+        </foreach>
+
+    </update>
+
+<!--    <select id="batchFindList" resultType="com.yidiandian.entity.BatchEntity">
+      select id,content,create_time as createTime,label,state,update_time as updateTime
+      from tb_batch_entity as a where 1= 1
+        <if test="list !=null list.size() > 0">
+            <foreach collection="list" separator="," item="item" index="index">
+                <if test="vo.id != null and ''!= vo.id">
+                    a.id = #{vo.id}
+                </if>
+                <if test="vo.label != null and '' != vo.label">
+                    and a.label = #{vo.label}
+                </if>
+                <if test="vo.content !=null and ''!= vo.content">
+                    and a.content = #{vo.content}
+                </if>
+                <if test="vo.state != null and '' != vo.state">
+                    and a.state = #{vo.state}
+                </if>
+            </foreach>
+        </if>
+    </select>-->
+
+
+    <select id="batchFindList"  parameterType="java.util.List" resultType="com.yidiandian.entity.BatchEntity">
+        select id,content,create_time as createTime,label,state,update_time as updateTime
+        from tb_batch_entity  where 1= 1
+
+        <if test="list!=null">
+            <foreach collection="list" item="item" index="index"  open="and (" separator="or " close=")">
+                <if test="item.id != null and '' != item.label">
+                    id = #{item.id}
+                </if>
+                <if test="item.label != null and '' != item.label">
+                        label = #{item.label}
+                </if>
+                <if test="item.content != null and '' != item.content">
+                     and  content = #{item.content}
+                </if>
+                <if test="item.state != null and '' != item.state">
+                    and  state = #{item.state}
+                </if>
+            </foreach>
+        </if>
+    </select>
+
+</mapper>
+
