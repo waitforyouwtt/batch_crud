@@ -31,4 +31,11 @@ public interface BatchService {
      * @return
      */
     List<BatchEntity> findList(List<BatchEntity> entityList);
+
+    /**
+     * 根据数据进行查询
+     * @param ids
+     * @return
+     */
+    List<BatchEntity> findByIds(Integer [] ids);
 }

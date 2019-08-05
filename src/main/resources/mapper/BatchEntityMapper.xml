@@ -41,34 +41,12 @@
 
     </update>
 
-<!--    <select id="batchFindList" resultType="com.yidiandian.entity.BatchEntity">
-      select id,content,create_time as createTime,label,state,update_time as updateTime
-      from tb_batch_entity as a where 1= 1
-        <if test="list !=null list.size() > 0">
-            <foreach collection="list" separator="," item="item" index="index">
-                <if test="vo.id != null and ''!= vo.id">
-                    a.id = #{vo.id}
-                </if>
-                <if test="vo.label != null and '' != vo.label">
-                    and a.label = #{vo.label}
-                </if>
-                <if test="vo.content !=null and ''!= vo.content">
-                    and a.content = #{vo.content}
-                </if>
-                <if test="vo.state != null and '' != vo.state">
-                    and a.state = #{vo.state}
-                </if>
-            </foreach>
-        </if>
-    </select>-->
-
-
     <select id="batchFindList"  parameterType="java.util.List" resultType="com.yidiandian.entity.BatchEntity">
         select id,content,create_time as createTime,label,state,update_time as updateTime
         from tb_batch_entity  where 1= 1
 
         <if test="list!=null">
-            <foreach collection="list" item="item" index="index"  open="and (" separator="or " close=")">
+            <foreach collection = "list" item ="item" index="index"  open="and (" separator="or " close=")">
                 <if test="item.id != null and '' != item.label">
                     id = #{item.id}
                 </if>
@@ -83,6 +61,14 @@
                 </if>
             </foreach>
         </if>
+    </select>
+
+    <select id="findByIds" resultType="com.yidiandian.entity.BatchEntity">
+         select id,content,create_time as createTime,label,state,update_time as updateTime
+         from tb_batch_entity  where 1= 1 and id in
+        <foreach collection="array" item = "item" index="index"  open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
 </mapper>

@@ -14,4 +14,6 @@ import java.util.List;
 public class BatchView {
     //批量删除参数化
     private List<Integer> ids;
+    //利用数据进行查询
+    private Integer [] idList;
 }

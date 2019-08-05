@@ -64,4 +64,15 @@ public class BatchServiceImpl implements BatchService {
     public List<BatchEntity> findList(List<BatchEntity> entityList) {
         return batchEntityDao.batchFindList(entityList);
     }
+
+    /**
+     * 根据数据进行查询
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<BatchEntity> findByIds(Integer[] ids) {
+        return batchEntityDao.findByIds(ids);
+    }
 }

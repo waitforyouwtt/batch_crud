@@ -54,4 +54,14 @@ public class BatchController {
     public ResponseEntity<BatchEntity> findList(@RequestBody List<BatchEntity> entityList){
         return new ResponseEntity(batchService.findList(entityList),HttpStatus.OK);
     }
+
+    /**
+     * 根据ids 进行查询
+     * @param batchView
+     * @return
+     */
+    @PostMapping("/findByIds")
+    public ResponseEntity<BatchEntity> findByIds(@RequestBody BatchView batchView){
+        return new ResponseEntity(batchService.findByIds(batchView.getIdList()),HttpStatus.OK);
+    }
 }

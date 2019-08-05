@@ -21,4 +21,6 @@ public interface BatchEntityDao {
     void batchUpdate(@Param("batchEntities") List<BatchEntity> batchEntities);
 
     List<BatchEntity> batchFindList(@Param("list") List<BatchEntity> list);
+
+    List<BatchEntity> findByIds(@Param("array") Integer [] ids);
 }
