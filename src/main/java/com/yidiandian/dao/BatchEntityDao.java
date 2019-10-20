@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface BatchEntityDao {
 
-    void batchInsert(@Param("batchEntities") List<BatchEntity> batchEntities);
+    int batchInsert(@Param("batchEntities") List<BatchEntity> batchEntities);
 
     void batchDelete(@Param("ids") List<Integer> ids);
 

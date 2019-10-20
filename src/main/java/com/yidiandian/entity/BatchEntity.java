@@ -2,9 +2,7 @@ package com.yidiandian.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -17,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(name ="tb_batch_entity")
 public class BatchEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String label;

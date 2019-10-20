@@ -17,6 +17,13 @@ public interface BatchService {
      * @return
      */
     void save(List<BatchEntity> entityList);
+
+    /**
+     * 批量增加优化代码
+     * @param batchEntityList
+     * @return
+     */
+    int addBatch(List<BatchEntity> batchEntityList);
     /**
      * 删除
      */
