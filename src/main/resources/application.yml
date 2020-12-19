@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&allowMultiQueries=true
     username: root
-    password: root
+    password: root123456
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,4 +13,8 @@ mybatis:
   type-aliases-package: com.yidiandian.entity
 server:
   port: 8080
+
+logging:
+  level:
+    com.yidiandian.dao: debug
 

@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: 凤凰[小哥哥]
@@ -24,17 +25,35 @@ public class BatchServiceImpl implements BatchService {
 
     @Resource
     BatchEntityDao batchEntityDao;
+
     /**
      * 批量增加
-     *
      * @param entityList
      * @return
      */
     @Override
-    public void save(List<BatchEntity> entityList) {
-        entityList.stream().forEach(batchEntity -> batchEntity.setCreateTime(LocalDateTime.now()));
-        entityList.stream().forEach(batchEntity -> batchEntity.setUpdateTime(LocalDateTime.now()));
+    public void batchInsert(List<BatchEntity> entityList) {
+        log.info("批量插入请求参数:{}",JSON.toJSONString(entityList));
+        entityList.stream().forEach(entity ->{
+            entity.setCreateTime(LocalDateTime.now());
+            entity.setUpdateTime(LocalDateTime.now());
+        });
         batchEntityDao.batchInsert(entityList);
+    }
+
+    /**
+     * 批量增加
+     * @param entityList
+     * @return
+     */
+    @Override
+    public void batchInsertForUpdate(List<BatchEntity> entityList) {
+        log.info("批量插入请求参数:{}",JSON.toJSONString(entityList));
+        entityList.stream().forEach(entity ->{
+            entity.setCreateTime(LocalDateTime.now());
+            entity.setUpdateTime(LocalDateTime.now());
+        });
+        batchEntityDao.batchInsertForUpdate(entityList);
     }
 
     /**
@@ -63,8 +82,17 @@ public class BatchServiceImpl implements BatchService {
      * @param ids
      */
     @Override
-    public void delete(List<Integer> ids) {
-        batchEntityDao.batchDelete(ids);
+    public void deleteList(List<Integer> ids) {
+        batchEntityDao.batchDeleteList(ids);
+    }
+    /**
+     * 删除
+     *
+     * @param ids
+     */
+    @Override
+    public void deleteArray(Integer[] ids) {
+        batchEntityDao.batchDeleteArray(ids);
     }
 
     /**
@@ -73,8 +101,21 @@ public class BatchServiceImpl implements BatchService {
      * @param entityList
      */
     @Override
-    public void update(List<BatchEntity> entityList) {
+    public void batchUpdate(List<BatchEntity> entityList) {
         batchEntityDao.batchUpdate(entityList);
+    }
+
+    /**
+     * 修改
+     *
+     * @param entityList
+     */
+    @Override
+    public void updates(List<BatchEntity> entityList) {
+        List<Integer> ids = entityList.stream().map(BatchEntity::getId).collect(Collectors.toList());
+        String content = entityList.get(0).getContent();
+        String label = entityList.get(0).getLabel();
+        batchEntityDao.updates(ids,content,label);
     }
 
     /**

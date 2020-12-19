@@ -1,6 +1,9 @@
 package com.yidiandian.entity;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name ="tb_batch_entity")
+@EntityListeners(AuditingEntityListener.class)
 public class BatchEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +28,9 @@ public class BatchEntity {
 
     private Integer state;
 
+    @CreatedDate
     private LocalDateTime createTime;
 
+    @LastModifiedDate
     private LocalDateTime updateTime;
 }

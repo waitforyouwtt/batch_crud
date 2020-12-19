@@ -21,36 +21,68 @@ public class BatchController {
     @Autowired
     BatchService batchService;
     /**
-     * 增加
+     * 批量增加
      */
-    @PostMapping("/save")
+    @PostMapping("/batchInsert")
     @ResponseBody
-    public ResponseEntity<BatchEntity> save(@RequestBody List<BatchEntity> entityList){
-        batchService.save(entityList);
+    public ResponseEntity<BatchEntity> batchInsert(@RequestBody List<BatchEntity> entityList){
+        batchService.batchInsert(entityList);
         return new ResponseEntity("保存成功", HttpStatus.OK);
     }
     /**
+     * 批量增加
+     */
+    @PostMapping("/batchInsertForUpdate")
+    @ResponseBody
+    public ResponseEntity<BatchEntity> batchInsertForUpdate(@RequestBody List<BatchEntity> entityList){
+        batchService.batchInsertForUpdate(entityList);
+        return new ResponseEntity("保存成功", HttpStatus.OK);
+    }
+
+    /**
      * 删除
      */
-    @PostMapping("/delete")
+    @DeleteMapping("/deleteList")
     @ResponseBody
-    public ResponseEntity<BatchEntity> delete(@RequestBody BatchView batchView){
-        batchService.delete(batchView.getIds());
+    public ResponseEntity<BatchEntity> deleteList(@RequestParam("list") List<Integer> idList){
+        batchService.deleteList(idList);
+        return new ResponseEntity("删除成功", HttpStatus.OK);
+    }
+
+    /**
+     * 删除
+     */
+    @DeleteMapping("/deleteArray")
+    @ResponseBody
+    public ResponseEntity<BatchEntity> deleteArray(Integer[] ids){
+        batchService.deleteArray(ids);
         return new ResponseEntity("删除成功", HttpStatus.OK);
     }
     /**
      * 修改
      */
-    @PostMapping("/updates")
+    @PutMapping("/batchUpdate")
     @ResponseBody
-    public ResponseEntity<BatchEntity> updates(@RequestBody List<BatchEntity> entityList){
-        batchService.update(entityList);
+    public ResponseEntity<BatchEntity> batchUpdate(@RequestBody List<BatchEntity> entityList){
+        batchService.batchUpdate(entityList);
         return new ResponseEntity("修改成功", HttpStatus.OK);
     }
+
+    /**
+     * 修改
+     */
+    @PutMapping("/updates")
+    @ResponseBody
+    public ResponseEntity<BatchEntity> updates(@RequestBody List<BatchEntity> entityList){
+        batchService.updates(entityList);
+        return new ResponseEntity("修改成功", HttpStatus.OK);
+    }
+
+
     /**
      * 查询
      */
-    @PostMapping("/find")
+    @PostMapping("/findList")
     public ResponseEntity<BatchEntity> findList(@RequestBody List<BatchEntity> entityList){
         return new ResponseEntity(batchService.findList(entityList),HttpStatus.OK);
     }
@@ -62,6 +94,6 @@ public class BatchController {
      */
     @PostMapping("/findByIds")
     public ResponseEntity<BatchEntity> findByIds(@RequestBody BatchView batchView){
-        return new ResponseEntity(batchService.findByIds(batchView.getIdList()),HttpStatus.OK);
+        return new ResponseEntity(batchService.findByIds(batchView.getIdArray()),HttpStatus.OK);
     }
 }

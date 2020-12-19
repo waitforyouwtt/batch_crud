@@ -6,21 +6,35 @@
     <insert id="batchInsert" parameterType="list">
         insert into tb_batch_entity(label,content,state,create_time,update_time)values
         <foreach item= "vo" collection= "batchEntities" index = "index" separator = "," >
-            (
-             #{vo.label},#{vo.content},#{vo.state},#{vo.createTime},#{vo.updateTime}
-            )
+            (#{vo.label},#{vo.content},#{vo.state},#{vo.createTime},#{vo.updateTime})
         </foreach>
     </insert>
 
-    <delete id="batchDelete" parameterType="java.util.List">
+    <insert id="batchInsertForUpdate" parameterType="list">
+        insert into tb_batch_entity(label,content,state,create_time,update_time)values
+        <foreach item= "vo" collection= "batchEntities" index = "index" separator = "," >
+            (#{vo.label},#{vo.content},#{vo.state},#{vo.createTime},#{vo.updateTime})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        label = VALUES(label),
+        content = VALUES(content)
+    </insert>
+
+    <delete id="batchDeleteList" parameterType="java.util.List">
        delete from tb_batch_entity where id in
-        <foreach collection="ids" item="item" separator="," open="(" close=")">
+        <foreach collection="list" item="item" separator="," open="(" close=")">
           #{item}
         </foreach>
     </delete>
 
-    <update id="batchUpdate" parameterType="java.util.List">
+    <delete id="batchDeleteArray" parameterType="java.util.List">
+        delete from tb_batch_entity where id in
+        <foreach collection="array" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
 
+    <update id="batchUpdate" parameterType="java.util.List">
         <foreach collection="batchEntities" item = "vo" index="index" open="" close="" separator=";">
             UPDATE tb_batch_entity
             <set>
@@ -38,13 +52,18 @@
                 id = #{vo.id}
             </where>
         </foreach>
+    </update>
 
+    <update id="updates" parameterType="java.util.List">
+        UPDATE tb_batch_entity set label = #{label},content = #{content} where 1 = 1 and id in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
     </update>
 
     <select id="batchFindList"  parameterType="java.util.List" resultType="com.yidiandian.entity.BatchEntity">
         select id,content,create_time as createTime,label,state,update_time as updateTime
         from tb_batch_entity  where 1= 1
-
         <if test="list!=null">
             <foreach collection = "list" item ="item" index="index"  open="and (" separator="or " close=")">
                 <if test="item.id != null and '' != item.label">

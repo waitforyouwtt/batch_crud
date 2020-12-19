@@ -53,7 +53,7 @@ public class BatchCrudApplicationTests {
 	@Test
 	public void deleteTest() {
 		List ids = Arrays.asList("1","3","4");
-		batchService.delete(ids);
+		batchService.deleteList(ids);
 	}
 
 }
