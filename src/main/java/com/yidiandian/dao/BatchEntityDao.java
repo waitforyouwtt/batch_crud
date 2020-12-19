@@ -56,4 +56,7 @@ public interface BatchEntityDao {
     List<BatchEntity> batchFindList(@Param("list") List<BatchEntity> list);
 
     List<BatchEntity> findByIds(@Param("array") Integer [] ids);
+
+    List<BatchEntity> findEntity(@Param("label")String label,@Param("list")List<String> content);
+
 }

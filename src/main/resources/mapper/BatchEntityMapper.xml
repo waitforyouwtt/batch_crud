@@ -90,5 +90,13 @@
         </foreach>
     </select>
 
+    <select id="findEntity" resultType="com.yidiandian.entity.BatchEntity">
+        select id,content,create_time as createTime,label,state,update_time as updateTime
+        from tb_batch_entity  where 1= 1  and label = #{label} and content in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
 </mapper>
 
