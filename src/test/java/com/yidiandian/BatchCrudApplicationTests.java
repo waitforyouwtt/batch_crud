@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -48,6 +51,22 @@ public class BatchCrudApplicationTests {
 		entities.add( batchEntity4 );
 		entities.add( batchEntity5 );
 		batchService.addBatch( entities );
+	}
+
+	@Test
+	public void batchSaveTest() {
+		List<BatchEntity> params = new ArrayList<>();
+		for (int i=0;i<100000;i++){
+			BatchEntity entity = new BatchEntity();
+			entity.setLabel("安书离label...+"+i);
+			entity.setContent("安书离content...+"+i);
+			entity.setState(1);
+			entity.setCreateTime(LocalDateTime.now());
+			entity.setUpdateTime(LocalDateTime.now());
+			params.add(entity);
+		}
+		System.out.println("得到的数据大小："+params.size());
+		batchService.batchSave(params);
 	}
 
 	@Test

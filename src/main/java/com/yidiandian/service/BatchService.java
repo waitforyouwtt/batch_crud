@@ -32,6 +32,8 @@ public interface BatchService {
      */
     int addBatch(List<BatchEntity> batchEntityList);
 
+    void batchSave(List<BatchEntity> params);
+
     /**
      * 删除
      */

@@ -1,8 +1,8 @@
 package com.yidiandian.dao;
 
 import com.yidiandian.entity.BatchEntity;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import java.util.List;
  * @Date: 2019/7/26 18:44
  * @Email: 15290810931@163.com
  */
-@Mapper
-public interface BatchEntityDao {
+@org.apache.ibatis.annotations.Mapper
+public interface BatchEntityDao extends Mapper<BatchEntity> {
 
     /**
      * 批量插入

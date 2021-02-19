@@ -6,6 +6,10 @@ import com.yidiandian.dao.BatchEntityDao;
 import com.yidiandian.entity.BatchEntity;
 import com.yidiandian.service.BatchService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +29,9 @@ public class BatchServiceImpl implements BatchService {
 
     @Resource
     BatchEntityDao batchEntityDao;
+
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
 
     /**
      * 批量增加
@@ -74,6 +81,23 @@ public class BatchServiceImpl implements BatchService {
         }
         log.info( "return 之前的result：{}",result );
         return result;
+    }
+
+    //批处理
+    @Transactional
+    @Override
+    public void batchSave(List<BatchEntity> params){
+        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH,false);
+        BatchEntityDao dao = session.getMapper(BatchEntityDao.class);
+        for (int i = 0; i < params.size(); i++) {
+            dao.insertSelective(params.get(i));
+            if(i%1000==999){//每1000条提交一次防止内存溢出
+                session.commit();
+                session.clearCache();
+            }
+        }
+        session.commit();
+        session.clearCache();
     }
 
     /**
