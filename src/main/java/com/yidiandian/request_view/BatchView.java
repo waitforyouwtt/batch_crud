@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class BatchView {
     //批量删除参数化
-    private List<Integer> ids;
+    private List<Integer> idList;
     //利用数据进行查询
-    private Integer [] idList;
+    private Integer [] idArray;
 }

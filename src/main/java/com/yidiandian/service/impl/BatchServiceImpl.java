@@ -6,12 +6,17 @@ import com.yidiandian.dao.BatchEntityDao;
 import com.yidiandian.entity.BatchEntity;
 import com.yidiandian.service.BatchService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: 凤凰[小哥哥]
@@ -24,17 +29,38 @@ public class BatchServiceImpl implements BatchService {
 
     @Resource
     BatchEntityDao batchEntityDao;
+
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
+
     /**
      * 批量增加
-     *
      * @param entityList
      * @return
      */
     @Override
-    public void save(List<BatchEntity> entityList) {
-        entityList.stream().forEach(batchEntity -> batchEntity.setCreateTime(LocalDateTime.now()));
-        entityList.stream().forEach(batchEntity -> batchEntity.setUpdateTime(LocalDateTime.now()));
+    public void batchInsert(List<BatchEntity> entityList) {
+        log.info("批量插入请求参数:{}",JSON.toJSONString(entityList));
+        entityList.stream().forEach(entity ->{
+            entity.setCreateTime(LocalDateTime.now());
+            entity.setUpdateTime(LocalDateTime.now());
+        });
         batchEntityDao.batchInsert(entityList);
+    }
+
+    /**
+     * 批量增加
+     * @param entityList
+     * @return
+     */
+    @Override
+    public void batchInsertForUpdate(List<BatchEntity> entityList) {
+        log.info("批量插入请求参数:{}",JSON.toJSONString(entityList));
+        entityList.stream().forEach(entity ->{
+            entity.setCreateTime(LocalDateTime.now());
+            entity.setUpdateTime(LocalDateTime.now());
+        });
+        batchEntityDao.batchInsertForUpdate(entityList);
     }
 
     /**
@@ -57,14 +83,40 @@ public class BatchServiceImpl implements BatchService {
         return result;
     }
 
+    //批处理
+    @Transactional
+    @Override
+    public void batchSave(List<BatchEntity> params){
+        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH,false);
+        BatchEntityDao dao = session.getMapper(BatchEntityDao.class);
+        for (int i = 0; i < params.size(); i++) {
+            dao.insertSelective(params.get(i));
+            if(i%1000==999){//每1000条提交一次防止内存溢出
+                session.commit();
+                session.clearCache();
+            }
+        }
+        session.commit();
+        session.clearCache();
+    }
+
     /**
      * 删除
      *
      * @param ids
      */
     @Override
-    public void delete(List<Integer> ids) {
-        batchEntityDao.batchDelete(ids);
+    public void deleteList(List<Integer> ids) {
+        batchEntityDao.batchDeleteList(ids);
+    }
+    /**
+     * 删除
+     *
+     * @param ids
+     */
+    @Override
+    public void deleteArray(Integer[] ids) {
+        batchEntityDao.batchDeleteArray(ids);
     }
 
     /**
@@ -73,8 +125,21 @@ public class BatchServiceImpl implements BatchService {
      * @param entityList
      */
     @Override
-    public void update(List<BatchEntity> entityList) {
+    public void batchUpdate(List<BatchEntity> entityList) {
         batchEntityDao.batchUpdate(entityList);
+    }
+
+    /**
+     * 修改
+     *
+     * @param entityList
+     */
+    @Override
+    public void updates(List<BatchEntity> entityList) {
+        List<Integer> ids = entityList.stream().map(BatchEntity::getId).collect(Collectors.toList());
+        String content = entityList.get(0).getContent();
+        String label = entityList.get(0).getLabel();
+        batchEntityDao.updates(ids,content,label);
     }
 
     /**

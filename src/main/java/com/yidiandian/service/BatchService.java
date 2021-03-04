@@ -16,7 +16,14 @@ public interface BatchService {
      * @param entityList
      * @return
      */
-    void save(List<BatchEntity> entityList);
+    void batchInsert(List<BatchEntity> entityList);
+    /**
+     * 批量增加
+     * @param entityList
+     * @return
+     */
+    void batchInsertForUpdate(List<BatchEntity> entityList);
+
 
     /**
      * 批量增加优化代码
@@ -24,14 +31,28 @@ public interface BatchService {
      * @return
      */
     int addBatch(List<BatchEntity> batchEntityList);
+
+    void batchSave(List<BatchEntity> params);
+
     /**
      * 删除
      */
-    void delete(List<Integer> ids);
+    void deleteList(List<Integer> idList);
+    /**
+     * 删除
+     */
+    void deleteArray(Integer[] ids);
+
     /**
      * 修改
      */
-    void update(List<BatchEntity> entityList);
+    void batchUpdate(List<BatchEntity> entityList);
+
+    /**
+     * 修改
+     */
+    void updates(List<BatchEntity> entityList);
+
     /**
      * 查询
      * @param entityList
