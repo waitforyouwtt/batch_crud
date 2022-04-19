@@ -1,14 +1,19 @@
 package com.yidiandian.controller;
 
+import com.yidiandian.config.RedissonConfig;
 import com.yidiandian.entity.BatchEntity;
 import com.yidiandian.request_view.BatchView;
 import com.yidiandian.service.BatchService;
+import org.redisson.Redisson;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: 凤凰[小哥哥]
@@ -20,6 +25,10 @@ public class BatchController {
 
     @Autowired
     BatchService batchService;
+
+    @Autowired
+    Redisson redisson;
+
     /**
      * 批量增加
      */
@@ -95,5 +104,21 @@ public class BatchController {
     @PostMapping("/findByIds")
     public ResponseEntity<BatchEntity> findByIds(@RequestBody BatchView batchView){
         return new ResponseEntity(batchService.findByIds(batchView.getIdArray()),HttpStatus.OK);
+    }
+
+    @PostMapping("/redisson")
+    public ResponseEntity<Void> redisson(@RequestParam("id")String id){
+        RLock orderLock = null;
+        try{
+            //获取锁
+             orderLock = redisson.getLock( "order_"+id );
+            //设置有效期30秒
+            orderLock.lock( 30, TimeUnit.SECONDS );
+            //操作数据库
+            batchService.addBatch( new ArrayList<>(  ) );
+        }finally {
+            orderLock.unlock();
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
